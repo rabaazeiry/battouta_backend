@@ -12,6 +12,10 @@ module.exports = {
   JWT_SECRET: process.env.JWT_SECRET,
   JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN || '24h',
 
+  SCRAPER_URL: process.env.SCRAPER_URL || 'http://localhost:8000',
+  N8N_WEBHOOK_URL: process.env.N8N_WEBHOOK_URL || 'http://localhost:5678',
+  N8N_WEBHOOK_SECRET: process.env.N8N_WEBHOOK_SECRET || '',
+
   OPENAI_API_KEY: process.env.OPENAI_API_KEY || '',
   GROQ_API_KEY: process.env.GROQ_API_KEY || '',
   VALUESERP_API_KEY: process.env.VALUESERP_API_KEY || '',

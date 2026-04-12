@@ -11,6 +11,7 @@ const classificationRoutes = require('./classification.routes');
 const scrapingRoutes       = require('./scraping.routes');
 const adminRoutes          = require('./admin.routes');
 const wsDemoRoutes         = require('./ws-demo.routes');
+const webhookRoutes        = require('./webhooks.routes');
 
 router.use('/auth',           authRoutes);
 router.use('/projects',       projectRoutes);
@@ -20,6 +21,7 @@ router.use('/classification', classificationRoutes);
 router.use('/scraping',       scrapingRoutes);
 router.use('/admin',          adminRoutes);
 router.use('/ws-demo',        wsDemoRoutes);
+router.use('/webhooks',       webhookRoutes);
 
 router.get('/health', (req, res) => {
   res.json({
