@@ -2,7 +2,10 @@
   "permissions": {
     "allow": [
       "WebSearch",
-      "WebFetch(domain:www.hermesthemes.com)"
+      "WebFetch(domain:www.hermesthemes.com)",
+      "Bash(git config:*)",
+      "Bash(ssh-keygen:*)",
+      "Bash(clip)"
     ]
   }
 }
