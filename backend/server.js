@@ -1,23 +1,24 @@
 // backend/server.js
 require('dotenv').config();
+const http = require('http');
 const app = require('./src/app');
 const connectDB = require('./src/config/database');
 const config = require('./src/config/env');
+const { initSocket } = require('./src/config/socket');
 
-/**
- * Démarrage du serveur
- */
 const startServer = async () => {
   try {
-    // 1. Connexion à MongoDB
     await connectDB();
 
-    // 2. Démarrage du serveur Express
-    const server = app.listen(config.PORT, () => {
+    const httpServer = http.createServer(app);
+    initSocket(httpServer);
+
+    httpServer.listen(config.PORT, () => {
       console.log('\n╔════════════════════════════════════════╗');
       console.log('║   🚀 SERVEUR DÉMARRÉ AVEC SUCCÈS      ║');
       console.log('╠════════════════════════════════════════╣');
       console.log(`║   📡 URL: http://localhost:${config.PORT}       ║`);
+      console.log(`║   🔌 WS : ws://localhost:${config.PORT}         ║`);
       console.log(`║   📝 ENV: ${config.NODE_ENV.padEnd(16)} ║`);
       console.log('╠════════════════════════════════════════╣');
       console.log('║   📚 ENDPOINTS:                        ║');
@@ -25,15 +26,13 @@ const startServer = async () => {
       console.log('║   • POST /api/auth/login              ║');
       console.log('║   • GET  /api/auth/me                 ║');
       console.log('║   • GET  /api/projects                ║');
-      console.log('║   • POST /api/projects                ║');
-      console.log('║   • GET  /api/competitors             ║');
+      console.log('║   • GET  /api/admin/users             ║');
       console.log('╚════════════════════════════════════════╝\n');
     });
 
-    // Gestion des erreurs non capturées
     process.on('unhandledRejection', (err) => {
       console.error('❌ Erreur non gérée (Promise Rejection):', err);
-      server.close(() => process.exit(1));
+      httpServer.close(() => process.exit(1));
     });
 
     process.on('uncaughtException', (err) => {
@@ -47,5 +46,4 @@ const startServer = async () => {
   }
 };
 
-// Démarrer l'application
 startServer();

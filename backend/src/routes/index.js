@@ -8,16 +8,18 @@ const projectRoutes        = require('./project.routes');
 const competitorRoutes     = require('./competitor.routes');
 const marketResearchRoutes = require('./marketResearch.routes');
 const classificationRoutes = require('./classification.routes');
-// ✅ AJOUTER
 const scrapingRoutes       = require('./scraping.routes');
+const adminRoutes          = require('./admin.routes');
+const wsDemoRoutes         = require('./ws-demo.routes');
 
 router.use('/auth',           authRoutes);
 router.use('/projects',       projectRoutes);
 router.use('/competitors',    competitorRoutes);
 router.use('/market-research',marketResearchRoutes);
 router.use('/classification', classificationRoutes);
-// ✅ AJOUTER
 router.use('/scraping',       scrapingRoutes);
+router.use('/admin',          adminRoutes);
+router.use('/ws-demo',        wsDemoRoutes);
 
 router.get('/health', (req, res) => {
   res.json({

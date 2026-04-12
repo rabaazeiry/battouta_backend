@@ -3,19 +3,14 @@
 const { verifyToken } = require('../utils/jwt.util');
 const User = require('../models/User.model');
 
-/**
- * Middleware de protection des routes (authentification requise)
- */
 const protect = async (req, res, next) => {
   try {
     let token;
 
-    // Vérifier si le token est dans le header Authorization
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
       token = req.headers.authorization.split(' ')[1];
     }
 
-    // Vérifier si le token existe
     if (!token) {
       return res.status(401).json({
         success: false,
@@ -23,10 +18,7 @@ const protect = async (req, res, next) => {
       });
     }
 
-    // Vérifier le token
     const decoded = verifyToken(token);
-
-    // Récupérer l'utilisateur
     const user = await User.findById(decoded.id).select('-password');
 
     if (!user) {
@@ -43,7 +35,6 @@ const protect = async (req, res, next) => {
       });
     }
 
-    // Attacher l'utilisateur à la requête
     req.user = user;
     next();
   } catch (error) {
@@ -54,21 +45,32 @@ const protect = async (req, res, next) => {
   }
 };
 
-/**
- * Middleware de vérification du rôle admin
- */
 const admin = (req, res, next) => {
   if (req.user && req.user.role === 'admin') {
-    next();
-  } else {
+    return next();
+  }
+  return res.status(403).json({
+    success: false,
+    message: 'Accès refusé - Droits administrateur requis'
+  });
+};
+
+// RBAC helper: requireRoles('admin'), requireRoles('admin','user'), etc.
+const requireRoles = (...allowedRoles) => (req, res, next) => {
+  if (!req.user) {
+    return res.status(401).json({ success: false, message: 'Non authentifié' });
+  }
+  if (!allowedRoles.includes(req.user.role)) {
     return res.status(403).json({
       success: false,
-      message: 'Accès refusé - Droits administrateur requis'
+      message: `Accès refusé - rôle requis: ${allowedRoles.join(' ou ')}`
     });
   }
+  next();
 };
 
 module.exports = {
   protect,
-  admin
+  admin,
+  requireRoles
 };

@@ -5,7 +5,10 @@
       "WebFetch(domain:www.hermesthemes.com)",
       "Bash(git config:*)",
       "Bash(ssh-keygen:*)",
-      "Bash(clip)"
+      "Bash(clip)",
+      "Bash(npm install:*)",
+      "Bash(npm create:*)",
+      "Bash(npx tailwindcss:*)"
     ]
   }
 }
