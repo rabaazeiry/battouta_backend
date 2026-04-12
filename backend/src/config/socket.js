@@ -10,9 +10,22 @@ const config = require('./env');
 let io = null;
 
 function initSocket(httpServer) {
+  const configuredOrigins = (config.FRONTEND_URL || '')
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
+
+  const isDevLocalhost = (origin) =>
+    /^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(:\d+)?$/i.test(origin);
+
   io = new Server(httpServer, {
     cors: {
-      origin: config.FRONTEND_URL || 'http://localhost:5173',
+      origin(origin, cb) {
+        if (!origin) return cb(null, true);
+        if (configuredOrigins.includes(origin)) return cb(null, true);
+        if (config.NODE_ENV !== 'production' && isDevLocalhost(origin)) return cb(null, true);
+        return cb(new Error(`CORS: origin ${origin} not allowed`));
+      },
       credentials: true
     }
   });
